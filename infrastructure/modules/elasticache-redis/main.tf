@@ -7,6 +7,9 @@ resource "aws_elasticache_cluster" "redis" {
   engine_version       = var.engine_version
   subnet_group_name    = aws_elasticache_subnet_group.redis_subnet.name
   security_group_ids   = var.security_groups
+
+  snapshot_retention_limit = 7
+  snapshot_window          = "05:00-07:00"
 }
 
 resource "aws_elasticache_subnet_group" "redis_subnet" {

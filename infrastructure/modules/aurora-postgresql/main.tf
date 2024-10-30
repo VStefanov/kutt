@@ -9,6 +9,9 @@ resource "aws_rds_cluster" "aurora_postgresql" {
   db_subnet_group_name      = aws_db_subnet_group.aurora_postgresql_subnets.id
   skip_final_snapshot       = true
 
+  backup_retention_period = 7
+  preferred_backup_window = "05:00-07:00"
+
   lifecycle {
     ignore_changes = [
       availability_zones,
