@@ -159,6 +159,7 @@ Architecture Components
 - Amazon Aurora PostgreSQL: A managed database that serves as the primary data store for the application. Aurora is deployed in a separate private subnet (db subnet) across two Availability Zones (eu-west-1a and eu-west-1b) to ensure durability and availability.
 
 ### Infrastructure Code and Deployment
+
 The Terraform codebase for deploying the infrastructure resides in the `infrastructure` folder at the root level of the repository. The infrastructure is modularized as follows:
 
 - Modules: Each resource (e.g., ECS, Load Balancer, RDS) has a dedicated module under `infrastructure/modules`. These modules are referenced in the main Terraform configuration file (`main.tf`) within the infrastructure folder.
@@ -173,7 +174,9 @@ The Terraform codebase for deploying the infrastructure resides in the `infrastr
 
     - `terraform-<step>.sh`: Helper scripts for each stage of the Terraform deployment process, automating setup and tear-down tasks.
  
-_Note: hardcoded some of the variables that are currently not in use in the Dockerfile, if we introduce a full solution and we have an actual values for those variables, then they will be set dynamically during the deployment process._
+_Note: hardcoded some of the variables that are currently not in use in the Dockerfile, if we introduce a full solution and we have an actual values for those variables, then they will be set dynamically during the deployment process. **The deployment reuqires you to have already created Route53 hosted zone and issued ACM certificate, this is currently not handled by the Terraform sources**._
+
+
 
 ## Improvements - TO DO
 
