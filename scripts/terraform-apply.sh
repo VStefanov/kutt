@@ -1,0 +1,1 @@
+terraform apply -var-file=./environments/dev.tfvars
