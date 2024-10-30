@@ -23,4 +23,8 @@ master_username = "temp_admin_user"
 master_password = "temp_admin_pass"
 
 # Application settings
-image_tag = "latest"
+image_tag       = "latest"
+app_domain_name = "dev.mbition-kutt.com"
+
+# ALB settings
+route53_hosted_zone_name = "mbition-kutt.com"

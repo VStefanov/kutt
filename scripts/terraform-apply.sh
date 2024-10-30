@@ -1,1 +1,5 @@
-terraform apply -var-file=./environments/dev.tfvars
+#!/bin/bash
+
+ENVIRONMENT=$1
+
+terraform apply -var-file=./environments/${ENVIRONMENT}.tfvars

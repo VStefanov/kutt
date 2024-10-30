@@ -54,7 +54,7 @@ module "app" {
     redis_host = module.redis.redis_host
     
     alb_target_group_arn = module.alb.target_group_arn
-    app_domain_name = module.alb.domain_name
+    app_domain_name = var.app_domain_name
 
     memory = 512
     cpu = 256
@@ -71,6 +71,8 @@ module "alb" {
     source               = "./modules/alb"
     environment          = var.environment
     resource_name_prefix = var.resource_name_prefix
+    
+    route53_hosted_zone_name = var.route53_hosted_zone_name
 
     vpc_id = module.vpc.vpc_id
     vpc_subnet_ids = module.vpc.public_subnet_ids

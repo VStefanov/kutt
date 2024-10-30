@@ -1,5 +1,16 @@
 #!/bin/bash
 
+
+# ===========================================
+# Manual steps before PRE-DEPLOYMENT script:
+#  - Registering domain name
+#  - Issuing certificate and validating it for the DEV env
+# ===========================================
+
+# ===========================================
+# Logic for creating ECR
+# ===========================================
+
 ENVIRONMENT=$1
 
 REPO_NAME="mbition-kutt-${ENVIRONMENT}"

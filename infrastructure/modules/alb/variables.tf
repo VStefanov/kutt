@@ -28,3 +28,8 @@ variable "target_group_port" {
   type = number
   default = 3000
 }
+
+variable "route53_hosted_zone_name" {
+  description = "Name of the Route53 Hosted Zone"
+  type = string
+}
