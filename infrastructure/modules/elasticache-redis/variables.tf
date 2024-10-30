@@ -37,3 +37,9 @@ variable "engine_version" {
   description = "Redis engine version"
   type = string
 }
+
+variable "logs_retention_period" {
+  description = "Retention period of the logs"
+  type = number
+  default = 7
+}
