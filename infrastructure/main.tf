@@ -60,7 +60,7 @@ module "app" {
     cpu = 256
     container_port = 3000
     host_port = 3000
-    image = "${aws_ecr_repository.this.repository_url}:${var.image_tag}"
+    image = "${data.aws_ecr_repository.this.repository_url}:${var.image_tag}"
 
     azs             = var.azs
     vpc_subnet_ids  = module.vpc.app_subnet_ids
