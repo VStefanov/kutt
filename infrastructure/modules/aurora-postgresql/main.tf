@@ -8,6 +8,13 @@ resource "aws_rds_cluster" "aurora_postgresql" {
   vpc_security_group_ids    = var.security_groups
   db_subnet_group_name      = aws_db_subnet_group.aurora_postgresql_subnets.id
   skip_final_snapshot       = true
+
+  lifecycle {
+    ignore_changes = [
+      availability_zones,
+      cluster_identifier
+    ]
+  }
 }
 
 resource "aws_db_subnet_group" "aurora_postgresql_subnets" {
