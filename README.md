@@ -177,7 +177,6 @@ _Note: hardcoded some of the variables that are currently not in use in the Dock
 
 ## Improvements - TO DO
 
-There are couple of things that I was not able to implement:
  - Secrets Manager for Aurora PostgreSQL password - enable Secrets Manager for storing the db password and extend the Kutt application by installing AWS Secrets Manager SDK and fetch the db password directly from Secrets Manager
 
  - Introduce CI/CD pipeline that has IaC scan tools like Checkov, add steps for linting and formatting, run the `pre-deployment-step.sh`, then build and push the container to ECR and finally deploy infrastructure with the terraform scripts. Add terraform deployment steps for 3 environments - dev, staging and prod.
