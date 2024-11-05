@@ -26,48 +26,10 @@ resource "aws_ecs_task_definition" "task" {
           awslogs-stream-prefix = "ecs"
         }
       }
-    environment = [
-      {
-        name  = "DB_HOST"
-        value = "${var.db_host}"
-      },
-      {
-        name = "DB_PORT"
-        value = "${var.db_port}"
-      },
-      {
-        name = "DEFAULT_DOMAIN"
-        value = "${var.app_domain_name}" # Should be set to LB
-      },
-      {
-        name = "DB_NAME"
-        value = "${var.db_name}"
-      },
-      {
-        name = "DB_USER"
-        value = "${var.db_user}"
-      },
-      {
-        name = "DB_PASSWORD"
-        value = "${var.db_pass}"
-      },
-      {
-        name = "DB_SSL"
-        value = "false"
-      },
-      {
-        name  = "REDIS_HOST"
-        value = "${var.redis_host}"
-      },
-      {
-        name  = "REDIS_PORT"
-        value = "${var.redis_port}"
-      },
-      {
-        name  = "REDIS_PASSWORD"
-        value = "${var.redis_password}"
-      }
-    ]
+    environment = [ for env_var in var.container_environment_variables : {
+      name  = env_var.name
+      value = env_var.value
+    }]
   }])
 }
 

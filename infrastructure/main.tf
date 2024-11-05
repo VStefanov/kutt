@@ -46,16 +46,21 @@ module "app" {
     environment          = var.environment
     resource_name_prefix = var.resource_name_prefix
 
-    db_host = module.db.db_host
-    db_name = var.database_name
-    db_pass = var.master_password
-    db_user = var.master_username
+    container_environment_variables = [
+        { name = "DB_HOST", value = "${module.db.db_host}" },
+        { name = "DB_PORT", value = "5432" },
+        { name = "DB_NAME", value = "${var.database_name}" },
+        { name = "DB_USER", value = "${var.master_username}" },
+        { name = "DB_PASSWORD", value = "${var.master_password}"},
+        { name = "DB_SSL", value = "false" },
+        { name = "DEFAULT_DOMAIN", value = "${var.app_domain_name}" },
+        { name = "REDIS_HOST", value = "${module.redis.redis_host}" },
+        { name = "REDIS_PORT", value = "6379" },
+        { name = "REDIS_PASSWORD", value = "" }
+    ]
 
-    redis_host = module.redis.redis_host
-    
     alb_target_group_arn = module.alb.target_group_arn
-    app_domain_name = var.app_domain_name
-
+    
     memory = 512
     cpu = 256
     container_port = 3000
