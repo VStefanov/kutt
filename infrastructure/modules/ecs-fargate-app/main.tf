@@ -2,7 +2,27 @@ resource "aws_ecs_cluster" "cluster" {
   name = "${var.resource_name_prefix}-cluster-${var.environment}"
 }
 
+resource "aws_ecs_service" "service" {
+  name            = "${var.resource_name_prefix}-service-${var.environment}"
+  cluster         = aws_ecs_cluster.cluster.id
+  task_definition = var.create_task_definition ? aws_ecs_task_definition.task[0].arn : null
+  desired_count   = 2
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets         = var.vpc_subnet_ids
+    security_groups = var.security_groups
+  }
+
+  load_balancer {
+    target_group_arn = var.alb_target_group_arn
+    container_name   = "${var.resource_name_prefix}-app-${var.environment}"
+    container_port   = var.container_port
+  }
+}
+
 resource "aws_ecs_task_definition" "task" {
+  count                    = var.create_task_definition ? 1 : 0
   family                   = "${var.resource_name_prefix}-task-${var.environment}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -33,25 +53,6 @@ resource "aws_ecs_task_definition" "task" {
   }])
 }
 
-resource "aws_ecs_service" "service" {
-  name            = "${var.resource_name_prefix}-service-${var.environment}"
-  cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_ecs_task_definition.task.arn
-  desired_count   = 2
-  launch_type     = "FARGATE"
-
-  network_configuration {
-    subnets         = var.vpc_subnet_ids
-    security_groups = var.security_groups
-  }
-
-  load_balancer {
-    target_group_arn = var.alb_target_group_arn
-    container_name   = "${var.resource_name_prefix}-app-${var.environment}"
-    container_port   = var.container_port
-  }
-}
-
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
   name              = "/ecs/${var.resource_name_prefix}-logs-${var.environment}"
   retention_in_days = var.logs_retention_period
@@ -71,7 +72,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   })
 }
 
-resource "aws_iam_policy" "ecr_fetch_policy" {
+resource "aws_iam_policy" "ecr_get_images" {
   name        = "${var.resource_name_prefix}-ecr-fetch-policy-${var.environment}"
   description = "Policy to allow ECS tasks to pull images from ECR"
   policy      = jsonencode({
@@ -103,7 +104,7 @@ resource "aws_iam_policy_attachment" "ecs_task_execution_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "ecr_fetch_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "ecr_get_images_attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = aws_iam_policy.ecr_fetch_policy.arn
+  policy_arn = aws_iam_policy.ecr_get_images.arn
 }

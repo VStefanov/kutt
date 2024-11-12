@@ -16,26 +16,31 @@ variable "azs" {
 variable "memory" {
   description = "Task memory"
   type = string
+  default = ""
 }
 
 variable "cpu" {
   description = "Task cpu"
   type = string
+  default = ""
 }
 
 variable "image" {
   description = "Task container image"
   type = string
+  default = ""
 }
 
 variable "container_port" {
   description = "Container port"
   type = number
+  default = 0
 }
 
 variable "host_port" {
   description = "Host port"
   type = number
+  default = 0
 }
 
 variable "vpc_subnet_ids" {
@@ -62,4 +67,11 @@ variable "logs_retention_period" {
 variable "container_environment_variables" {
   description = "Environment variables of the container"
   type = list(map(string))
+  default = null
+}
+
+variable "create_task_definition" {
+  description = "Create task definition or skip the creation (Pilot Light recovery setup - in case we want secondary ECS service without any tasks)"
+  type = bool
+  default = true
 }

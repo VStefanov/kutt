@@ -1,4 +1,17 @@
-# VPC vars
+# Provider region vars
+variable "primary_region" {
+  description = "Primary region of the Aurora Global Cluster"
+  type = string
+  default = "eu-west-1"
+}
+
+variable "secondary_region" {
+  description = "Secondary region of the Aurora Global Cluster"
+  type = string
+  default = "us-east-1"
+}
+
+# Primary VPC vars
 variable "environment" {
   description = "Infrastructure environment"
   type        = string
@@ -9,45 +22,87 @@ variable "resource_name_prefix" {
   type        = string
 }
 
-variable "vpc_cidr_block" {
+variable "primary_vpc_cidr_block" {
   description = "CIDR block for the VPC"
   type        = string
 }
 
-variable "public_subnet_count" {
+variable "primary_public_subnet_count" {
   description = "Number of public subnets"
   type        = number
 }
 
-variable "app_subnet_count" {
+variable "primary_app_subnet_count" {
   description = "Number of app private subnets"
   type        = number
 }
 
-variable "db_subnet_count" {
+variable "primary_db_subnet_count" {
   description = "Number of db private subnets"
   type        = number
 }
 
-variable "public_subnet_cidrs" {
+variable "primary_public_subnet_cidrs" {
   description = "CIDR blocks for public subnets"
   type        = list(string)
 }
 
-variable "app_subnet_cidrs" {
+variable "primary_app_subnet_cidrs" {
   description = "CIDR blocks for app private subnets"
   type        = list(string)
 }
 
-variable "db_subnet_cidrs" {
+variable "primary_db_subnet_cidrs" {
   description = "CIDR blocks for db private subnets"
   type        = list(string)
 }
 
-variable "azs" {
+variable "primary_azs" {
   description = "A list of availability zones names or ids in the region"
   type        = list(string)
 }
+
+# Secondary VPC vars
+variable "secondary_vpc_cidr_block" {
+  description = "CIDR block for the VPC"
+  type        = string
+}
+
+variable "secondary_public_subnet_count" {
+  description = "Number of public subnets"
+  type        = number
+}
+
+variable "secondary_app_subnet_count" {
+  description = "Number of app private subnets"
+  type        = number
+}
+
+variable "secondary_db_subnet_count" {
+  description = "Number of db private subnets"
+  type        = number
+}
+
+variable "secondary_public_subnet_cidrs" {
+  description = "CIDR blocks for public subnets"
+  type        = list(string)
+}
+
+variable "secondary_app_subnet_cidrs" {
+  description = "CIDR blocks for app private subnets"
+  type        = list(string)
+}
+
+variable "secondary_db_subnet_cidrs" {
+  description = "CIDR blocks for db private subnets"
+  type        = list(string)
+}
+
+variable "secondary_azs" {
+  description = "A list of availability zones names or ids in the region"
+  type        = list(string)
+}
+
 
 # Redis vars
 variable "node_type" {
@@ -55,8 +110,8 @@ variable "node_type" {
   type = string
 }
 
-variable "num_cache_nodes" {
-  description = "Redis cache nodes number"
+variable "num_cache_clusters" {
+  description = "ElastiCache cluster number"
   type = number
 }
 
@@ -65,8 +120,23 @@ variable "parameter_group_name" {
   type = string
 }
 
-variable "engine_version" {
-  description = "Redis engine version"
+variable "db_engine" {
+  description = "Database engine"
+  type = string
+}
+
+variable "db_engine_version" {
+  description = "Database engine version"
+  type = string
+}
+
+variable "cache_engine" {
+  description = "ElastiCache engine"
+  type = string
+}
+
+variable "cache_engine_version" {
+  description = "ElastiCache engine version"
   type = string
 }
 
