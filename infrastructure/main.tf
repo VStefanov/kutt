@@ -184,6 +184,7 @@ module "app_primary" {
     ]
 
     alb_target_group_arn = module.alb_primary.target_group_arn
+    desired_count        = 2
     
     memory = 512
     cpu = 256
@@ -208,6 +209,7 @@ module "app_secondary" {
     alb_target_group_arn = module.alb_secondary.target_group_arn
 
     create_task_definition = false # We want an empty Service for the Pilot Light backup strategy
+    desired_count          = 0
     
     azs             = var.secondary_azs
     vpc_subnet_ids  = module.vpc_secondary.app_subnet_ids

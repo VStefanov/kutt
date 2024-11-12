@@ -6,7 +6,7 @@ resource "aws_ecs_service" "service" {
   name            = "${var.resource_name_prefix}-service-${var.environment}"
   cluster         = aws_ecs_cluster.cluster.id
   task_definition = var.create_task_definition ? aws_ecs_task_definition.task[0].arn : null
-  desired_count   = 2
+  desired_count   = var.create_task_definition ? var.desired_count : 0
   launch_type     = "FARGATE"
 
   network_configuration {

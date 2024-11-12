@@ -75,3 +75,8 @@ variable "create_task_definition" {
   type = bool
   default = true
 }
+
+variable "desired_count" {
+  description = "ECS service desired task count"
+  type = number
+}
