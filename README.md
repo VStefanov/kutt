@@ -140,13 +140,13 @@ Special thanks to [Thomas](https://github.com/trgwii) and [Muthu](https://github
 
 ## Infrastructure
 
-![Diagram](docs/images/mbition-kutt.png)
+![Diagram](docs/images/kutt-arch.png)
 
 ### Kutt App AWS Architecture Documentation
 This architecture supports the Kutt app with high availability, scalability, and security. It includes the following key components:
 
 Architecture Components
-- Route 53: Manages DNS routing for the Kutt app. A hosted zone in Route53 allows access to the application at https://dev.mbition-kutt.com/.
+- Route 53: Manages DNS routing for the Kutt app
 
 - ACM Certificate: Provides and manages SSL/TLS certificates to secure communication between users and the application.
 

@@ -13,7 +13,7 @@
 
 ENVIRONMENT=$1
 
-REPO_NAME="mbition-kutt-${ENVIRONMENT}"
+REPO_NAME="kutt-${ENVIRONMENT}"
 AWS_REGION="eu-west-1"
 
 # Check if repository already exists
