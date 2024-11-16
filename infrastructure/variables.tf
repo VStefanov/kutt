@@ -177,3 +177,9 @@ variable "route53_hosted_zone_name" {
   description = "Name of the Route53 Hosted Zone"
   type = string
 }
+
+# ECR vars
+variable "ecr_replication_group_region_name" {
+  description = "Region of the ECR Replication Group"
+  type = string
+}

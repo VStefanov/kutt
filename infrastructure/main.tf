@@ -33,6 +33,31 @@ module "vpc_secondary" {
     }
 }
 
+# ECR Global Replication
+
+module "ecr_primary" {
+  source = "./modules/ecr-global"
+  environment          = var.environment
+  resource_name_prefix = "${var.resource_name_prefix}-primary"
+
+  providers = {
+      aws = aws.primary
+    }
+}
+
+module "ecr_secondary" {
+  source = "./modules/ecr-global"
+  environment          = var.environment
+  resource_name_prefix = "${var.resource_name_prefix}-secondary"
+
+  create_replication_group = true
+  replication_group_region = var.ecr_replication_group_region_name
+
+  providers = {
+      aws = aws.secondary
+    }
+}
+
 # Aurora Global Database
 resource "aws_rds_global_cluster" "this" {
   provider                  = aws.primary
@@ -190,7 +215,7 @@ module "app_primary" {
     cpu = 256
     container_port = 3000
     host_port = 3000
-    image = "${data.aws_ecr_repository.this.repository_url}:${var.image_tag}"
+    image = "${module.ecr_primary.repository_url}:${var.image_tag}"
 
     azs             = var.primary_azs
     vpc_subnet_ids  = module.vpc_primary.app_subnet_ids
