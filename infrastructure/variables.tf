@@ -103,11 +103,15 @@ variable "secondary_azs" {
   type        = list(string)
 }
 
-
-# Redis vars
+# ElastiCache vars
 variable "node_type" {
-  description = "Redis node type"
+  description = "ElastiCache node type"
   type = string
+}
+
+variable "cache_cluster_port" {
+  description = "ElastiCache cluster port"
+  type = number
 }
 
 variable "num_cache_clusters" {
@@ -116,17 +120,7 @@ variable "num_cache_clusters" {
 }
 
 variable "parameter_group_name" {
-  description = "Redis parameter group name"
-  type = string
-}
-
-variable "db_engine" {
-  description = "Database engine"
-  type = string
-}
-
-variable "db_engine_version" {
-  description = "Database engine version"
+  description = "ElastiCache parameter group name"
   type = string
 }
 
@@ -159,6 +153,21 @@ variable "database_name" {
 variable "instance_class" {
   description = "Database instance size"
   type = string
+}
+
+variable "db_engine" {
+  description = "Database engine"
+  type = string
+}
+
+variable "db_engine_version" {
+  description = "Database engine version"
+  type = string
+}
+
+variable "db_port" {
+  description = "Aurora Global Database port"
+  type = number
 }
 
 # Application vars

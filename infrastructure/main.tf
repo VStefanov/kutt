@@ -78,6 +78,7 @@ module "db_primary" {
     database_name   = var.database_name
     engine          = var.db_engine
     engine_version  = var.db_engine_version
+    port            = var.db_port
 
     azs             = var.primary_azs
     vpc_subnet_ids  = module.vpc_primary.db_subnet_ids
@@ -102,6 +103,7 @@ module "db_secondary" {
     database_name   = var.database_name
     engine          = var.db_engine
     engine_version  = var.db_engine_version
+    port            = var.db_port
 
     azs             = var.secondary_azs
     vpc_subnet_ids  = module.vpc_secondary.db_subnet_ids
@@ -129,6 +131,7 @@ module "cache_primary" {
     engine               = var.cache_engine
     engine_version       = var.cache_engine_version
     num_cache_clusters   = var.num_cache_clusters
+    port                 = var.cache_cluster_port
 
     vpc_subnet_ids  = module.vpc_primary.app_subnet_ids
     security_groups = [module.vpc_primary.cache_security_group_id]
@@ -150,6 +153,7 @@ module "cache_secondary" {
     engine               = var.cache_engine
     engine_version       = var.cache_engine_version
     num_cache_clusters   = var.num_cache_clusters
+    port                 = var.cache_cluster_port
 
     vpc_subnet_ids  = module.vpc_secondary.app_subnet_ids
     security_groups = [module.vpc_secondary.cache_security_group_id]
@@ -197,14 +201,14 @@ module "app_primary" {
 
     container_environment_variables = [
         { name = "DB_HOST", value = "${module.db_primary.writer_endpoint}" },
-        { name = "DB_PORT", value = "5432" },
+        { name = "DB_PORT", value = "${var.db_port}" },
         { name = "DB_NAME", value = "${var.database_name}" },
         { name = "DB_USER", value = "${var.master_username}" },
         { name = "DB_PASSWORD", value = "${var.master_password}"},
         { name = "DB_SSL", value = "false" },
-        { name = "DEFAULT_DOMAIN", value = "${var.app_domain_name}" },
+        { name = "DEFAULT_DOMAIN", value = "${module.alb_primary.domain_name}" },
         { name = "REDIS_HOST", value = "${module.cache_primary.replication_group_primary_endpoint_address}" },
-        { name = "REDIS_PORT", value = "6379" },
+        { name = "REDIS_PORT", value = "${var.cache_cluster_port}" },
         { name = "REDIS_PASSWORD", value = "" }
     ]
 
@@ -221,7 +225,7 @@ module "app_primary" {
     vpc_subnet_ids  = module.vpc_primary.app_subnet_ids
     security_groups = [module.vpc_primary.app_security_group_id]
 
-     providers = {
+    providers = {
       aws = aws.primary
     }
 }
@@ -240,8 +244,47 @@ module "app_secondary" {
     vpc_subnet_ids  = module.vpc_secondary.app_subnet_ids
     security_groups = [module.vpc_secondary.app_security_group_id]
 
-     providers = {
+    providers = {
       aws = aws.secondary
     }
 }
 
+# Route53
+
+resource "aws_route53_zone" "this" {
+  name = "myapp-kutt.com"
+}
+
+module "route_primary" {
+  source = "./modules/route53-failover"
+
+  alb_dns     = module.alb_primary.domain_name
+  alb_zone_id = module.alb_primary.zone_id
+  
+  failover_policy_type       = "PRIMARY"
+  health_check_resource_path = "/health"
+
+  hosted_zone_id = aws_route53_zone.this.zone_id
+  domain_name    = module.alb_primary.domain_name
+
+  providers = {
+    aws = aws.primary
+  }
+}
+
+module "route_secondary" {
+  source = "./modules/route53-failover"
+
+  alb_dns     = module.alb_primary.domain_name
+  alb_zone_id = module.alb_primary.zone_id
+
+  failover_policy_type       = "SECONDARY"
+  health_check_resource_path = "/health"
+
+  hosted_zone_id = aws_route53_zone.this.zone_id
+  domain_name    = module.alb_primary.domain_name
+
+  providers = {
+    aws = aws.secondary
+  }
+}

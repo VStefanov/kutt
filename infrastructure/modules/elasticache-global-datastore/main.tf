@@ -8,8 +8,8 @@ resource "aws_elasticache_replication_group" "primary" {
   engine_version             = var.engine_version
   automatic_failover_enabled = true
   security_group_ids         = var.security_groups
-  port                       = 6379
-  parameter_group_name       = "default.redis6.x.cluster.on"
+  port                       = var.port
+  parameter_group_name       = var.parameter_group_name
   subnet_group_name          = aws_elasticache_subnet_group.this.name
 
   log_delivery_configuration {
@@ -31,7 +31,6 @@ resource "aws_elasticache_global_replication_group" "this" {
 
 resource "aws_elasticache_replication_group" "secondary" {
   count                       = var.create_secondary_global_replication_group ? 1 : 0
-  provider                    = aws.secondary
   replication_group_id        = "${var.resource_name_prefix}-${var.environment}"
   description                 =  "Secondary Replication Group for Global Datastore"
   global_replication_group_id = var.global_replication_group_id

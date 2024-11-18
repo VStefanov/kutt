@@ -11,6 +11,7 @@ resource "aws_rds_cluster" "this" {
   master_password           = var.master_password
   database_name             = var.database_name
   vpc_security_group_ids    = var.security_groups
+  port                      = var.port
 
   enable_global_write_forwarding = var.enable_global_write_forwarding
 

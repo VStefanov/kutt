@@ -72,3 +72,8 @@ variable "cluster_instance_count" {
   type = number
   default = 1
 }
+
+variable "port" {
+  description = "Aurora Global Database port"
+  type = number
+}

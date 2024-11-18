@@ -29,7 +29,7 @@ variable "num_cache_clusters" {
 }
 
 variable "parameter_group_name" {
-  description = "Redis parameter group name"
+  description = "ElastiCache parameter group name"
   type = string
 }
 
@@ -65,4 +65,9 @@ variable "create_secondary_global_replication_group" {
   description = "Determines whether an secondary ElastiCache global replication group will be created"
   type = bool
   default = false
+}
+
+variable "port" {
+  description = "ElastiCache port"
+  type = number
 }
