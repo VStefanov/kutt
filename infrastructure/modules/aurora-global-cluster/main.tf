@@ -2,16 +2,16 @@
 
 # Aurora Primary Cluster
 resource "aws_rds_cluster" "this" {
-  cluster_identifier        = "${var.resource_name_prefix}-cluster-${var.environment}"
-  engine                    = var.engine
-  engine_version            = var.engine_version
-  global_cluster_identifier = var.global_cluster_identifier
-  availability_zones        = var.azs
-  master_username           = var.master_username
-  master_password           = var.master_password
-  database_name             = var.database_name
-  vpc_security_group_ids    = var.security_groups
-  port                      = var.port
+  cluster_identifier          = "${var.resource_name_prefix}-cluster-${var.environment}"
+  engine                      = var.engine
+  engine_version              = var.engine_version
+  global_cluster_identifier   = var.global_cluster_identifier
+  availability_zones          = var.azs
+  master_username             = var.master_username
+  manage_master_user_password = true
+  database_name               = var.database_name
+  vpc_security_group_ids      = var.security_groups
+  port                        = var.port
 
   enable_global_write_forwarding = var.enable_global_write_forwarding
 
