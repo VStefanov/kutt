@@ -143,45 +143,5 @@ Special thanks to [Thomas](https://github.com/trgwii) and [Muthu](https://github
 ![Diagram](docs/images/kutt-arch.png)
 
 ### Kutt App AWS Architecture Documentation
-This architecture supports the Kutt app with high availability, scalability, and security. It includes the following key components:
-
-Architecture Components
-- Route 53: Manages DNS routing for the Kutt app
-
-- ACM Certificate: Provides and manages SSL/TLS certificates to secure communication between users and the application.
-
-- Application Load Balancer (ALB): Distributes incoming traffic across ECS tasks to ensure high availability and scalability.
-
-- Amazon Elastic Container Service (ECS): Runs containerized applications in a private subnet across two Availability Zones (eu-west-1a and eu-west-1b). ECS ensures that the application is isolated in a secure environment.
-
-- Amazon ElastiCache (Redis): Provides in-memory caching to improve application response times. Redis is hosted in the same private subnet (app subnet) as the ECS tasks, allowing for low-latency access.
-
-- Amazon Aurora PostgreSQL: A managed database that serves as the primary data store for the application. Aurora is deployed in a separate private subnet (db subnet) across two Availability Zones (eu-west-1a and eu-west-1b) to ensure durability and availability.
 
 ### Infrastructure Code and Deployment
-
-The Terraform codebase for deploying the infrastructure resides in the `infrastructure` folder at the root level of the repository. The infrastructure is modularized as follows:
-
-- Modules: Each resource (e.g., ECS, Load Balancer, RDS) has a dedicated module under `infrastructure/modules`. These modules are referenced in the main Terraform configuration file (`main.tf`) within the infrastructure folder.
-
-- Helper Scripts: The scripts folder contains scripts to streamline the deployment process. Here’s a breakdown of the main scripts:
-
-    - `pre-deployment-step.sh`: Creates ECR repositories as a prerequisite for deploying ECS tasks. In an automated pipeline, this script would run prior to the Terraform deployment.
-
-    - `ecr-build-and-push.sh`: Builds the Docker image from the app's Dockerfile and pushes it to the ECR repository created in the previous step. This script typically runs between the pre-deployment and Terraform steps.
-
-    - `assume-role.sh`: Assumes the required IAM role to provision Terraform resources, allowing secure and scoped access to AWS.
-
-    - `terraform-<step>.sh`: Helper scripts for each stage of the Terraform deployment process, automating setup and tear-down tasks.
- 
-_Note: hardcoded some of the variables that are currently not in use in the Dockerfile, if we introduce a full solution and we have an actual values for those variables, then they will be set dynamically during the deployment process. **The deployment reuqires you to have already created Route53 hosted zone and issued ACM certificate, this is currently not handled by the Terraform sources**._
-
-
-
-## Improvements - TO DO
-
- - Secrets Manager for Aurora PostgreSQL password - enable Secrets Manager for storing the db password and extend the Kutt application by installing AWS Secrets Manager SDK and fetch the db password directly from Secrets Manager
-
- - Introduce CI/CD pipeline that has IaC scan tools like Checkov, add steps for linting and formatting, run the `pre-deployment-step.sh`, then build and push the container to ECR and finally deploy infrastructure with the terraform scripts. Add terraform deployment steps for 3 environments - dev, staging and prod.
-
- - Add a WAF to the Application Load Balancer and setup a few rate-limit rules to now allow too much requests from a single IP.
