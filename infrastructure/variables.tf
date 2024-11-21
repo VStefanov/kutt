@@ -177,15 +177,6 @@ variable "image_tag" {
   default = "latest"
 }
 
-variable "app_domain_name" {
-  description = "Domain name of the running application"
-  type = string
-}
-
-variable "route53_hosted_zone_name" {
-  description = "Name of the Route53 Hosted Zone"
-  type = string
-}
 
 # ECR vars
 variable "ecr_replication_group_region_name" {

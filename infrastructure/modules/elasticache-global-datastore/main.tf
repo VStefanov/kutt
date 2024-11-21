@@ -26,7 +26,7 @@ resource "aws_elasticache_replication_group" "primary" {
 resource "aws_elasticache_global_replication_group" "this" {
   count                              = var.create_primary_global_replication_group ? 1 : 0
   global_replication_group_id_suffix = "global-cluster"
-  primary_replication_group_id       = aws_elasticache_replication_group.primary.id
+  primary_replication_group_id       = aws_elasticache_replication_group.primary[0].id
 }
 
 resource "aws_elasticache_replication_group" "secondary" {

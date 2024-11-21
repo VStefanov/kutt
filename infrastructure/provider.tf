@@ -6,7 +6,7 @@ provider "aws" {
     tags = {
       Environment = "${var.environment}"
       Project     = "kutt-primary"
-      Owner       = "deployment-admin"
+      Owner       = "admin-deployment"
     }
   }
 }
@@ -19,7 +19,7 @@ provider "aws" {
     tags = {
       Environment = "${var.environment}"
       Project     = "kutt-secondary"
-      Owner       = "deployment-admin"
+      Owner       = "admin-deployment"
     }
   }
 }

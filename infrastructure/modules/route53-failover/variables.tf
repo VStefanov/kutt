@@ -35,3 +35,8 @@ variable "health_check_resource_path" {
   type = string
   default = "/"
 }
+
+variable "record_identifier" {
+  description = "Unique identifier to differentiate records with routing policies from one another"
+  type = string
+}

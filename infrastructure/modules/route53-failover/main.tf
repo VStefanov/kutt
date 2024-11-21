@@ -18,6 +18,7 @@ resource "aws_route53_record" "this" {
   }
 
   health_check_id = aws_route53_health_check.this.id
+  set_identifier = var.record_identifier
   failover_routing_policy {
     type = var.failover_policy_type
   }

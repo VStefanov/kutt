@@ -263,6 +263,7 @@ module "route_primary" {
   
   failover_policy_type       = "PRIMARY"
   health_check_resource_path = "/health"
+  record_identifier          = "primary"
 
   hosted_zone_id = aws_route53_zone.this.zone_id
   domain_name    = module.alb_primary.domain_name
@@ -276,6 +277,7 @@ module "route_secondary" {
 
   failover_policy_type       = "SECONDARY"
   health_check_resource_path = "/health"
+  record_identifier          = "secondary"
 
   hosted_zone_id = aws_route53_zone.this.zone_id
   domain_name    = module.alb_primary.domain_name
