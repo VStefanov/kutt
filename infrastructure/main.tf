@@ -266,10 +266,6 @@ module "route_primary" {
 
   hosted_zone_id = aws_route53_zone.this.zone_id
   domain_name    = module.alb_primary.domain_name
-
-  providers = {
-    aws = aws.primary
-  }
 }
 
 module "route_secondary" {
@@ -283,8 +279,4 @@ module "route_secondary" {
 
   hosted_zone_id = aws_route53_zone.this.zone_id
   domain_name    = module.alb_primary.domain_name
-
-  providers = {
-    aws = aws.secondary
-  }
 }
