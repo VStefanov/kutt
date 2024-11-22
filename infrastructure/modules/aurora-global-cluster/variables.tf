@@ -28,16 +28,19 @@ variable "engine_version" {
 variable "master_username" {
   description = "Database master username"
   type = string
+  default = null
 }
 
 variable "master_password" {
   description = "Database master password"
   type = string
+  default = null
 }
 
 variable "database_name" {
   description = "Database name"
   type = string
+  default = null
 }
 
 variable "instance_class" {

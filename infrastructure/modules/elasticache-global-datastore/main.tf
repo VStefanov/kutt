@@ -12,6 +12,8 @@ resource "aws_elasticache_replication_group" "primary" {
   parameter_group_name       = var.parameter_group_name
   subnet_group_name          = aws_elasticache_subnet_group.this.name
 
+  preferred_cache_cluster_azs = var.azs
+
   log_delivery_configuration {
     destination      = aws_cloudwatch_log_group.this.name
     destination_type = "cloudwatch-logs"
@@ -36,6 +38,11 @@ resource "aws_elasticache_replication_group" "secondary" {
   global_replication_group_id = var.global_replication_group_id
   subnet_group_name           = aws_elasticache_subnet_group.this.name
   num_cache_clusters          = var.num_cache_clusters
+  node_type                   = var.node_type
+  engine                     = var.engine
+  engine_version             = var.engine_version
+
+  preferred_cache_cluster_azs = var.azs
 
   log_delivery_configuration {
     destination      = aws_cloudwatch_log_group.this.name

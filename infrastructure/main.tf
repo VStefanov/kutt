@@ -85,11 +85,7 @@ module "db_secondary" {
     source               = "./modules/aurora-global-cluster"
     environment          = var.environment
     resource_name_prefix = "${var.resource_name_prefix}-secondary"
-
-    master_password = var.master_password
-    master_username = var.master_username
     instance_class  = var.instance_class
-    database_name   = var.database_name
     engine          = var.db_engine
     engine_version  = var.db_engine_version
     port            = var.db_port
@@ -105,6 +101,10 @@ module "db_secondary" {
     providers = {
       aws = aws.secondary
     }
+
+    depends_on = [ 
+      module.db_primary 
+    ]
 }
 
 # ElastiCache Global Datastore
@@ -124,6 +124,7 @@ module "cache_primary" {
 
     vpc_subnet_ids  = module.vpc_primary.app_subnet_ids
     security_groups = [module.vpc_primary.cache_security_group_id]
+    azs             = var.primary_azs
 
     providers = {
       aws = aws.primary
@@ -146,10 +147,15 @@ module "cache_secondary" {
 
     vpc_subnet_ids  = module.vpc_secondary.app_subnet_ids
     security_groups = [module.vpc_secondary.cache_security_group_id]
+    azs             = var.secondary_azs
 
     providers = {
       aws = aws.secondary
     }
+
+    depends_on = [ 
+      module.cache_primary
+     ]
 }
 
 # ALB
@@ -195,7 +201,7 @@ module "app_primary" {
         { name = "DB_USER", value = "${var.master_username}" },
         { name = "DB_PASSWORD", value = "${var.master_password}"},
         { name = "DB_SSL", value = "false" },
-        { name = "DEFAULT_DOMAIN", value = "${module.alb_primary.domain_name}" },
+        { name = "DEFAULT_DOMAIN", value = "${var.app_domain_name}" },
         { name = "REDIS_HOST", value = "${module.cache_primary.replication_group_primary_endpoint_address}" },
         { name = "REDIS_PORT", value = "${var.cache_cluster_port}" },
         { name = "REDIS_PASSWORD", value = "" }
@@ -219,6 +225,7 @@ module "app_primary" {
     }
 }
 
+/*
 module "app_secondary" {
     source = "./modules/ecs-fargate-app"
     environment          = var.environment
@@ -237,7 +244,7 @@ module "app_secondary" {
       aws = aws.secondary
     }
 }
-
+*/
 # Route53
 resource "aws_route53_zone" "this" {
   name = "myapp-kutt.com"
@@ -252,21 +259,23 @@ module "route_primary" {
   failover_policy_type       = "PRIMARY"
   health_check_resource_path = "/health"
   record_identifier          = "primary"
+  health_port                = 80
 
   hosted_zone_id = aws_route53_zone.this.zone_id
-  domain_name    = module.alb_primary.domain_name
+  domain_name    = var.app_domain_name
 }
 
 module "route_secondary" {
   source = "./modules/route53-failover"
 
-  alb_dns     = module.alb_primary.domain_name
-  alb_zone_id = module.alb_primary.zone_id
+  alb_dns     = module.alb_secondary.domain_name
+  alb_zone_id = module.alb_secondary.zone_id
 
   failover_policy_type       = "SECONDARY"
   health_check_resource_path = "/health"
   record_identifier          = "secondary"
+  health_port                = 80
 
   hosted_zone_id = aws_route53_zone.this.zone_id
-  domain_name    = module.alb_primary.domain_name
+  domain_name    = var.app_domain_name
 }

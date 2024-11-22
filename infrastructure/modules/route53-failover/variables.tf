@@ -40,3 +40,8 @@ variable "record_identifier" {
   description = "Unique identifier to differentiate records with routing policies from one another"
   type = string
 }
+
+variable "health_port" {
+  description = "Port for the Route53 health check"
+  type = number
+}

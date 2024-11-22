@@ -8,7 +8,7 @@ resource "aws_rds_cluster" "this" {
   global_cluster_identifier   = var.global_cluster_identifier
   availability_zones          = var.azs
   master_username             = var.master_username
-  manage_master_user_password = true
+  master_password             = var.master_password
   database_name               = var.database_name
   vpc_security_group_ids      = var.security_groups
   port                        = var.port
@@ -18,7 +18,7 @@ resource "aws_rds_cluster" "this" {
   db_subnet_group_name      = aws_db_subnet_group.this.id
   skip_final_snapshot       = true
 
-  enabled_cloudwatch_logs_exports = [ "error" ]
+  enabled_cloudwatch_logs_exports = [ "postgresql" ]
 
   backup_retention_period = 7
   preferred_backup_window = "05:00-07:00"

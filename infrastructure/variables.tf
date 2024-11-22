@@ -177,6 +177,11 @@ variable "image_tag" {
   default = "latest"
 }
 
+variable "app_domain_name" {
+  description = "Domain name of the application"
+  type = string
+}
+
 
 # ECR vars
 variable "ecr_replication_group_region_name" {

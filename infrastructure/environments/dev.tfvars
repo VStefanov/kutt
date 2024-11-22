@@ -2,7 +2,7 @@
 environment          = "dev"
 resource_name_prefix = "myapp-kutt"
 
-# Primary VPC settings
+# Primary VPC settings (eu-west-1)
 primary_public_subnet_count = 2
 primary_app_subnet_count    = 2
 primary_db_subnet_count     = 2
@@ -12,7 +12,7 @@ primary_app_subnet_cidrs    = ["10.0.3.0/24", "10.0.4.0/24"]
 primary_db_subnet_cidrs     = ["10.0.5.0/24", "10.0.6.0/24"]
 primary_azs                 = ["eu-west-1a","eu-west-1b"]
 
-# Secondary VPC settings
+# Secondary VPC settings (us-east-1)
 secondary_public_subnet_count = 2
 secondary_app_subnet_count    = 2
 secondary_db_subnet_count     = 2
@@ -29,19 +29,20 @@ ecr_replication_group_region_name = "us-east-1" # This is the SECONDARY region
 db_engine         = "aurora-postgresql"
 db_engine_version = "16.4"
 database_name     = "kuttdb"
-instance_class    = "db.t4g.medium"
+instance_class    = "db.r5.large"
 master_username   = "temp_admin_user"
 master_password   = "temp_admin_pass"
 db_port           = 5432
 
 # Redis settings
-node_type            = "cache.t3.micro"
+node_type            = "cache.m6g.large"
 num_cache_clusters   = 2
-parameter_group_name = "default.redis7"
+parameter_group_name = "default.redis6.x"
 cache_engine         = "redis"
-cache_engine_version = "7.1"
+cache_engine_version = "6.x"
 cache_cluster_port   = 6379
 
 
 # Application settings
 image_tag       = "latest"
+app_domain_name = "dev.myapp-kutt.com"

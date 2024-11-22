@@ -2,6 +2,7 @@ resource "aws_route53_health_check" "this" {
   fqdn                           = var.alb_dns
   type                           = var.health_check_type
   resource_path                  = var.health_check_resource_path
+  port                           = var.health_port
   failure_threshold              = 3
   request_interval               = 30
 }
