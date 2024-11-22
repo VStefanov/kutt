@@ -26,7 +26,8 @@ resource "aws_rds_cluster" "this" {
   lifecycle {
     ignore_changes = [
       availability_zones,
-      cluster_identifier
+      cluster_identifier,
+      replication_source_identifier
     ]
   }
 }

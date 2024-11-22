@@ -137,6 +137,7 @@ module "cache_secondary" {
     resource_name_prefix = "${var.resource_name_prefix}-secondary"
 
     create_secondary_global_replication_group = true
+    global_replication_group_id               = module.cache_primary.global_replication_group_id
 
     node_type            = var.node_type
     parameter_group_name = var.parameter_group_name

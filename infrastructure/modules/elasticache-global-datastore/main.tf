@@ -14,6 +14,9 @@ resource "aws_elasticache_replication_group" "primary" {
 
   preferred_cache_cluster_azs = var.azs
 
+  transit_encryption_enabled = true
+  at_rest_encryption_enabled = true
+
   log_delivery_configuration {
     destination      = aws_cloudwatch_log_group.this.name
     destination_type = "cloudwatch-logs"
@@ -28,6 +31,7 @@ resource "aws_elasticache_replication_group" "primary" {
 resource "aws_elasticache_global_replication_group" "this" {
   count                              = var.create_primary_global_replication_group ? 1 : 0
   global_replication_group_id_suffix = "global-cluster"
+  
   primary_replication_group_id       = aws_elasticache_replication_group.primary[0].id
 }
 
@@ -38,9 +42,6 @@ resource "aws_elasticache_replication_group" "secondary" {
   global_replication_group_id = var.global_replication_group_id
   subnet_group_name           = aws_elasticache_subnet_group.this.name
   num_cache_clusters          = var.num_cache_clusters
-  node_type                   = var.node_type
-  engine                     = var.engine
-  engine_version             = var.engine_version
 
   preferred_cache_cluster_azs = var.azs
 
