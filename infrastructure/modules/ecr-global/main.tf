@@ -4,8 +4,7 @@ resource "aws_ecr_repository" "this" {
 
 resource "aws_ecr_replication_configuration" "example" {
   count = var.create_replication_group ? 1 : 0
-
-  provider = aws.source
+  
   replication_configuration {
     rule {  
       destination {
@@ -14,7 +13,7 @@ resource "aws_ecr_replication_configuration" "example" {
       }
 
       repository_filter {
-        filter      = var.destination_repository_filter_prefix
+        filter      = "${var.resource_name_prefix}"
         filter_type = "PREFIX_MATCH"
       }
     }

@@ -37,25 +37,13 @@ module "vpc_secondary" {
 module "ecr_primary" {
   source = "./modules/ecr-global"
   environment          = var.environment
-  resource_name_prefix = "${var.resource_name_prefix}-primary"
-
-  providers = {
-      aws = aws.primary
-    }
-}
-
-module "ecr_secondary" {
-  source = "./modules/ecr-global"
-  environment          = var.environment
-  resource_name_prefix = "${var.resource_name_prefix}-secondary"
+  resource_name_prefix = "${var.resource_name_prefix}"
 
   create_replication_group             = true
   replication_group_region             = var.ecr_replication_group_region_name
-  destination_repository_filter_prefix = "${var.resource_name_prefix}"
-  source_ecr_region                    = "eu-west-1"
 
   providers = {
-      aws = aws.secondary
+      aws = aws.primary
     }
 }
 
