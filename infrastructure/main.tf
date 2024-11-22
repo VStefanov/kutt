@@ -1,4 +1,4 @@
-
+# Network settings
 module "vpc_primary" {
     source                  = "./modules/vpc"
     environment = var.environment
@@ -34,7 +34,6 @@ module "vpc_secondary" {
 }
 
 # ECR Global Replication
-
 module "ecr_primary" {
   source = "./modules/ecr-global"
   environment          = var.environment
@@ -50,8 +49,10 @@ module "ecr_secondary" {
   environment          = var.environment
   resource_name_prefix = "${var.resource_name_prefix}-secondary"
 
-  create_replication_group = true
-  replication_group_region = var.ecr_replication_group_region_name
+  create_replication_group             = true
+  replication_group_region             = var.ecr_replication_group_region_name
+  destination_repository_filter_prefix = "${var.resource_name_prefix}"
+  source_ecr_region                    = "eu-west-1"
 
   providers = {
       aws = aws.secondary
@@ -250,7 +251,6 @@ module "app_secondary" {
 }
 
 # Route53
-
 resource "aws_route53_zone" "this" {
   name = "myapp-kutt.com"
 }

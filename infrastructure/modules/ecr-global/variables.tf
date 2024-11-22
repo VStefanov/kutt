@@ -19,3 +19,15 @@ variable "replication_group_region" {
   type = string
   default = ""
 }
+
+variable "source_ecr_region" {
+  description = "Region of the source ECR"
+  type        = string
+  default = ""
+}
+
+variable "destination_repository_filter_prefix" {
+  description = "The repository filter details"
+  type        = string
+  default = ""
+}

@@ -4,11 +4,18 @@ resource "aws_ecr_repository" "this" {
 
 resource "aws_ecr_replication_configuration" "example" {
   count = var.create_replication_group ? 1 : 0
+
+  provider = aws.source
   replication_configuration {
     rule {  
       destination {
         region      = var.replication_group_region
-        registry_id = aws_ecr_repository.this.id
+        registry_id = data.aws_caller_identity.current.account_id
+      }
+
+      repository_filter {
+        filter      = var.destination_repository_filter_prefix
+        filter_type = "PREFIX_MATCH"
       }
     }
   }
