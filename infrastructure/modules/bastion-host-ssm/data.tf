@@ -1,3 +1,5 @@
+# This image contains SSM Agent which is necessary for the SSM Bastion Host Secure Connection.
+# Otherwise, you need to make sure that the relevant AMI has SSM Agent installed on it.
 data "aws_ami" "amazon_linux_2023" {
   most_recent      = true
 

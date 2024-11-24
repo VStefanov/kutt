@@ -45,8 +45,8 @@ cache_cluster_port   = 6379
 
 # Application settings
 image_tag             = "latest"
-app_domain_name       = "dev.myapp-kutt.com"
+app_domain_name       = "dev.some-domain.com" # TO BE UPDATED
 app_health_check_path = "/api/v2/health"
 
 # Route53
-root_domain_name = "some-domain.com"
+root_domain_name = "some-domain.com" # TO BE UPDATED

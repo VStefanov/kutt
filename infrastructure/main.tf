@@ -215,7 +215,7 @@ module "bastion_cache_primary" {
   environment          = var.environment
   resource_name_prefix = "${var.resource_name_prefix}-cache-primary"
 
-  subnet_id       = module.vpc_primary.app_subnet_ids[0]
+  subnet_id       = module.vpc_primary.app_subnet_ids[0] # ElastiCache is deployed in the APP subnet
   security_groups = [module.vpc_primary.bastion_security_group_id]
 }
 
