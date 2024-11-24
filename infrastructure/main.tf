@@ -19,7 +19,6 @@ module "vpc_primary" {
     }
 }
 
-/*
 module "vpc_secondary" {
     source                  = "./modules/vpc"
     environment = var.environment
@@ -32,11 +31,13 @@ module "vpc_secondary" {
     db_subnet_cidrs = var.secondary_db_subnet_cidrs
     azs = var.secondary_azs
 
+    db_port            = var.db_port
+    cache_cluster_port = var.cache_cluster_port
+
     providers = {
       aws = aws.secondary
     }
 }
-*/
 
 # ECR Global Replication
 module "ecr_global_cross_region" {
@@ -86,7 +87,6 @@ module "db_primary" {
     }
 }
 
-/*
 module "db_secondary" {
     source               = "./modules/aurora-global-cluster"
     environment          = var.environment
@@ -112,7 +112,7 @@ module "db_secondary" {
       module.db_primary 
     ]
 }
-*/
+
 # ElastiCache Global Datastore
 module "cache_primary" {
     source               = "./modules/elasticache-global-datastore"
@@ -136,7 +136,7 @@ module "cache_primary" {
       aws = aws.primary
     }
 }
-/*
+
 module "cache_secondary" {
     source               = "./modules/elasticache-global-datastore"
     environment          = var.environment
@@ -164,7 +164,7 @@ module "cache_secondary" {
       module.cache_primary
      ]
 }
-*/
+
 # ALB
 module "alb_primary" {
     source               = "./modules/alb"
@@ -181,7 +181,7 @@ module "alb_primary" {
       aws = aws.primary
     }
 }
-/*
+
 module "alb_secondary" {
     source               = "./modules/alb"
     environment          = var.environment
@@ -195,7 +195,7 @@ module "alb_secondary" {
       aws = aws.secondary
     }
 }
-*/
+
 
 # Bastion Hosts
 module "bastion_db_primary" {
@@ -253,7 +253,7 @@ module "app_primary" {
     }
 }
 
-/*
+
 module "app_secondary" {
     source = "./modules/ecs-fargate-app"
     environment          = var.environment
@@ -272,13 +272,8 @@ module "app_secondary" {
       aws = aws.secondary
     }
 }
-*/
-/*
-# Route53
-resource "aws_route53_zone" "this" {
-  name = "myapp-kutt.com"
-}
 
+# Route53
 module "route_primary" {
   source = "./modules/route53-failover"
 
@@ -286,11 +281,11 @@ module "route_primary" {
   alb_zone_id = module.alb_primary.zone_id
   
   failover_policy_type       = "PRIMARY"
-  health_check_resource_path = "/health"
+  health_check_resource_path = var.app_health_check_path
   record_identifier          = "primary"
   health_port                = 80
 
-  hosted_zone_id = aws_route53_zone.this.zone_id
+  hosted_zone_id = data.aws_route53_zone.this.zone_id
   domain_name    = var.app_domain_name
 }
 
@@ -301,11 +296,10 @@ module "route_secondary" {
   alb_zone_id = module.alb_secondary.zone_id
 
   failover_policy_type       = "SECONDARY"
-  health_check_resource_path = "/health"
+  health_check_resource_path = var.app_health_check_path
   record_identifier          = "secondary"
   health_port                = 80
 
-  hosted_zone_id = aws_route53_zone.this.zone_id
+  hosted_zone_id = data.aws_route53_zone.this.zone_id
   domain_name    = var.app_domain_name
 }
-*/

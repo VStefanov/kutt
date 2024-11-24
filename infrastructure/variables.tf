@@ -196,3 +196,8 @@ variable "app_health_check_path" {
   type = string
   default = "/"
 }
+
+variable "root_domain_name" {
+  description = "Name of the Route53 zone where to add records"
+  type = string
+}

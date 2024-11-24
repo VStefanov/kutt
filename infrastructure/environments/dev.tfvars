@@ -47,3 +47,6 @@ cache_cluster_port   = 6379
 image_tag             = "latest"
 app_domain_name       = "dev.myapp-kutt.com"
 app_health_check_path = "/api/v2/health"
+
+# Route53
+root_domain_name = "some-domain.com"
