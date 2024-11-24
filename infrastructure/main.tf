@@ -16,6 +16,7 @@ module "vpc_primary" {
     }
 }
 
+/*
 module "vpc_secondary" {
     source                  = "./modules/vpc"
     environment = var.environment
@@ -32,9 +33,10 @@ module "vpc_secondary" {
       aws = aws.secondary
     }
 }
+*/
 
 # ECR Global Replication
-module "ecr_primary" {
+module "ecr_global_cross_region" {
   source = "./modules/ecr-global"
   environment          = var.environment
   resource_name_prefix = "${var.resource_name_prefix}"
@@ -81,6 +83,7 @@ module "db_primary" {
     }
 }
 
+/*
 module "db_secondary" {
     source               = "./modules/aurora-global-cluster"
     environment          = var.environment
@@ -106,7 +109,7 @@ module "db_secondary" {
       module.db_primary 
     ]
 }
-
+*/
 # ElastiCache Global Datastore
 module "cache_primary" {
     source               = "./modules/elasticache-global-datastore"
@@ -130,7 +133,7 @@ module "cache_primary" {
       aws = aws.primary
     }
 }
-
+/*
 module "cache_secondary" {
     source               = "./modules/elasticache-global-datastore"
     environment          = var.environment
@@ -158,7 +161,7 @@ module "cache_secondary" {
       module.cache_primary
      ]
 }
-
+*/
 # ALB
 module "alb_primary" {
     source               = "./modules/alb"
@@ -169,11 +172,13 @@ module "alb_primary" {
     vpc_subnet_ids = module.vpc_primary.public_subnet_ids
     security_groups = [module.vpc_primary.alb_security_group_id]
 
+    health_check_path = var.app_health_check_path
+
     providers = {
       aws = aws.primary
     }
 }
-
+/*
 module "alb_secondary" {
     source               = "./modules/alb"
     environment          = var.environment
@@ -187,7 +192,7 @@ module "alb_secondary" {
       aws = aws.secondary
     }
 }
-
+*/
 
 # Application
 module "app_primary" {
@@ -202,20 +207,20 @@ module "app_primary" {
         { name = "DB_USER", value = "${var.master_username}" },
         { name = "DB_PASSWORD", value = "${var.master_password}"},
         { name = "DB_SSL", value = "false" },
-        { name = "DEFAULT_DOMAIN", value = "${var.app_domain_name}" },
+        { name = "DEFAULT_DOMAIN", value = "${module.alb_primary.domain_name}" },
         { name = "REDIS_HOST", value = "${module.cache_primary.replication_group_primary_endpoint_address}" },
         { name = "REDIS_PORT", value = "${var.cache_cluster_port}" },
         { name = "REDIS_PASSWORD", value = "" }
     ]
 
     alb_target_group_arn = module.alb_primary.target_group_arn
-    desired_count        = 2
+    desired_count        = 1
     
     memory = 512
     cpu = 256
     container_port = 3000
     host_port = 3000
-    image = "${module.ecr_primary.repository_url}:${var.image_tag}"
+    image = "${module.ecr_global_cross_region.repository_url}:${var.image_tag}"
 
     azs             = var.primary_azs
     vpc_subnet_ids  = module.vpc_primary.app_subnet_ids
@@ -246,6 +251,7 @@ module "app_secondary" {
     }
 }
 */
+/*
 # Route53
 resource "aws_route53_zone" "this" {
   name = "myapp-kutt.com"
@@ -280,3 +286,4 @@ module "route_secondary" {
   hosted_zone_id = aws_route53_zone.this.zone_id
   domain_name    = var.app_domain_name
 }
+*/

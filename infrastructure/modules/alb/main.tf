@@ -14,12 +14,12 @@ resource "aws_lb_target_group" "this" {
   target_type = "ip"
 
   health_check {
-    path                = "/health"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 3
-    matcher             = 302
+    path                = var.health_check_path
+    interval            = var.health_check_interval
+    timeout             = var.health_check_timeout
+    healthy_threshold   = var.health_healthy_threshold
+    unhealthy_threshold = var.health_unhealthy_threshold
+    matcher             = var.health_response_status_code
   }
 }
 

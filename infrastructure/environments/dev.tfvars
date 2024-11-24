@@ -31,7 +31,7 @@ db_engine_version = "16.4"
 database_name     = "kuttdb"
 instance_class    = "db.r5.large"
 master_username   = "temp_admin_user"
-master_password   = "temp_admin_pass"
+master_password   = "temp_admin_pass" # We have Aurora Global Database that does not support Secrets Manager password management out of the box.
 db_port           = 5432
 
 # Redis settings
@@ -44,5 +44,6 @@ cache_cluster_port   = 6379
 
 
 # Application settings
-image_tag       = "latest"
-app_domain_name = "dev.myapp-kutt.com"
+image_tag             = "latest"
+app_domain_name       = "dev.myapp-kutt.com"
+app_health_check_path = "/api/v2/health"

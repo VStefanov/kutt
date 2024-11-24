@@ -188,3 +188,11 @@ variable "ecr_replication_group_region_name" {
   description = "Region of the ECR Replication Group"
   type = string
 }
+
+
+# ALB vars
+variable "app_health_check_path" {
+  description = "URI path of the ALB health check"
+  type = string
+  default = "/"
+}
