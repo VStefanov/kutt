@@ -177,6 +177,8 @@ module "alb_primary" {
 
     health_check_path = var.app_health_check_path
 
+    certificate_arn = data.aws_acm_certificate.this.arn
+
     providers = {
       aws = aws.primary
     }
@@ -190,6 +192,8 @@ module "alb_secondary" {
     vpc_id = module.vpc_secondary.vpc_id
     vpc_subnet_ids = module.vpc_secondary.public_subnet_ids
     security_groups = [module.vpc_secondary.alb_security_group_id]
+
+    certificate_arn = data.aws_acm_certificate.this.arn
 
     providers = {
       aws = aws.secondary
@@ -281,7 +285,7 @@ module "route_primary" {
   alb_zone_id = module.alb_primary.zone_id
   
   health_check_resource_path = var.app_health_check_path
-  health_port                = 80
+  health_port                = 443
   failover_policy_type       = "PRIMARY"
   record_identifier          = "primary"
   
@@ -298,7 +302,7 @@ module "route_secondary" {
 
   
   health_check_resource_path = var.app_health_check_path
-  health_port                = 80
+  health_port                = 443
   failover_policy_type       = "SECONDARY"
   record_identifier          = "secondary"
 

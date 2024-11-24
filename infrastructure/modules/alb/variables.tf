@@ -64,3 +64,14 @@ variable "health_response_status_code" {
   type = number
   default = 200
 }
+
+variable "health_protocol" {
+  description = "Protocol of the ALB health check"
+  type = string
+  default = "HTTP"
+}
+
+variable "certificate_arn" {
+  description = "ARN of the SSL certificate that will be associated to the ALB"
+  type = string
+}
