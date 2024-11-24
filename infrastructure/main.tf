@@ -232,14 +232,14 @@ module "app_primary" {
         { name = "DB_USER", value = "${var.master_username}" },
         { name = "DB_PASSWORD", value = "${var.master_password}"},
         { name = "DB_SSL", value = "false" },
-        { name = "DEFAULT_DOMAIN", value = "${module.alb_primary.domain_name}" },
+        { name = "DEFAULT_DOMAIN", value = "${var.app_domain_name}" },
         { name = "REDIS_HOST", value = "${module.cache_primary.replication_group_primary_endpoint_address}" },
         { name = "REDIS_PORT", value = "${var.cache_cluster_port}" },
         { name = "REDIS_PASSWORD", value = "" }
     ]
 
     alb_target_group_arn = module.alb_primary.target_group_arn
-    desired_count        = 1
+    desired_count        = 2
     
     memory = 512
     cpu = 256
@@ -256,16 +256,33 @@ module "app_primary" {
     }
 }
 
-
+/*
 module "app_secondary" {
     source = "./modules/ecs-fargate-app"
     environment          = var.environment
     resource_name_prefix = "${var.resource_name_prefix}-secondary"
 
-    alb_target_group_arn = module.alb_secondary.target_group_arn
+    container_environment_variables = [
+        { name = "DB_HOST", value = "${module.db_secondary.writer_endpoint}" },
+        { name = "DB_PORT", value = "${var.db_port}" },
+        { name = "DB_NAME", value = "${var.database_name}" },
+        { name = "DB_USER", value = "${var.master_username}" },
+        { name = "DB_PASSWORD", value = "${var.master_password}"},
+        { name = "DB_SSL", value = "false" },
+        { name = "DEFAULT_DOMAIN", value = "${var.app_domain_name}" },
+        { name = "REDIS_HOST", value = "${module.cache_secondary.replication_group_secondary_primary_endpoint_address}" },
+        { name = "REDIS_PORT", value = "${var.cache_cluster_port}" },
+        { name = "REDIS_PASSWORD", value = "" }
+    ]
 
-    create_task_definition = false # We want an empty Service for the Pilot Light backup strategy
-    desired_count          = 0
+    alb_target_group_arn = module.alb_secondary.target_group_arn
+    desired_count        = 1
+
+    memory = 512
+    cpu = 256
+    container_port = 3000
+    host_port = 3000
+    image = "${data.aws_ecr_repository.secondary.repository_url}:${var.image_tag}" # Get ECR repo from DATA Resource as it is replicated
     
     azs             = var.secondary_azs
     vpc_subnet_ids  = module.vpc_secondary.app_subnet_ids
@@ -275,6 +292,7 @@ module "app_secondary" {
       aws = aws.secondary
     }
 }
+*/
 
 # Route53
 module "route_primary" {

@@ -12,3 +12,13 @@ output "replication_group_reader_endpoint_address" {
    description = "Address of the endpoint for the primary node in the replication group"
    value       = try(aws_elasticache_replication_group.primary[0].reader_endpoint_address, null)
 }
+
+output "replication_group_secondary_primary_endpoint_address" {
+   description = "Address of the endpoint for the primary node in the replication group"
+   value       = try(aws_elasticache_replication_group.secondary[0].primary_endpoint_address, null)
+}
+
+output "replication_group_secondary_reader_endpoint_address" {
+   description = "Address of the endpoint for the primary node in the replication group"
+   value       = try(aws_elasticache_replication_group.secondary[0].reader_endpoint_address, null)
+}
