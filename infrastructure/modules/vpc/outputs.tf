@@ -29,3 +29,7 @@ output "db_security_group_id" {
 output "cache_security_group_id" {
   value = aws_security_group.cache.id
 }
+
+output "bastion_security_group_id" {
+  value = aws_security_group.bastion.id
+}

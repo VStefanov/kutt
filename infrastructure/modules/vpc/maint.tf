@@ -144,10 +144,16 @@ resource "aws_security_group" "db" {
   name   = "db-sg-${var.environment}"
   vpc_id =  aws_vpc.this.id
   ingress {
-    from_port   = 5432
-    to_port     = 5432
+    from_port   = var.db_port
+    to_port     = var.db_port
     protocol    = "tcp"
     security_groups = [aws_security_group.app.id]
+  }
+  ingress {
+    from_port   = var.db_port
+    to_port     = var.db_port
+    protocol    = "tcp"
+    security_groups = [aws_security_group.bastion.id]
   }
   egress {
     from_port   = 0
@@ -161,10 +167,16 @@ resource "aws_security_group" "cache" {
   name   = "cache-sg-${var.environment}"
   vpc_id = aws_vpc.this.id
   ingress {
-    from_port   = 6379
-    to_port     = 6379
+    from_port   = var.cache_cluster_port
+    to_port     = var.cache_cluster_port
     protocol    = "tcp"
     security_groups = [aws_security_group.app.id]
+  }
+  ingress {
+    from_port   = var.cache_cluster_port
+    to_port     = var.cache_cluster_port
+    protocol    = "tcp"
+    security_groups = [aws_security_group.bastion.id]
   }
   egress {
     from_port   = 0
@@ -173,3 +185,23 @@ resource "aws_security_group" "cache" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_security_group" "bastion" {
+  name   = "bastion-sg-${var.environment}"
+  vpc_id = aws_vpc.this.id
+
+  egress {
+    from_port   = var.db_port
+    to_port     = var.db_port
+    protocol    = "tcp"
+    security_groups = [aws_security_group.db.id]
+  }
+
+  egress {
+    from_port   = var.cache_cluster_port
+    to_port     = var.cache_cluster_port
+    protocol    = "tcp"
+    security_groups = [aws_security_group.app.id]
+  }
+}
+

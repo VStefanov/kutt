@@ -43,3 +43,13 @@ variable "azs" {
   description = "A list of availability zones names or ids in the region"
   type        = list(string)
 }
+
+variable "db_port" {
+  description = "Aurora Global Database port"
+  type = number
+}
+
+variable "cache_cluster_port" {
+  description = "ElastiCache cluster port"
+  type = number
+}

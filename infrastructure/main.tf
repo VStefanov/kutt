@@ -11,6 +11,9 @@ module "vpc_primary" {
     db_subnet_cidrs = var.primary_db_subnet_cidrs
     azs = var.primary_azs
 
+    db_port            = var.db_port
+    cache_cluster_port = var.cache_cluster_port
+
     providers = {
       aws = aws.primary
     }
@@ -193,6 +196,25 @@ module "alb_secondary" {
     }
 }
 */
+
+# Bastion Hosts
+module "bastion_db_primary" {
+  source               = "./modules/bastion-host-ssm"
+  environment          = var.environment
+  resource_name_prefix = "${var.resource_name_prefix}-db-primary"
+
+  subnet_id       = module.vpc_primary.db_subnet_ids[0]
+  security_groups = [module.vpc_primary.bastion_security_group_id]
+}
+
+module "bastion_cache_primary" {
+  source               = "./modules/bastion-host-ssm"
+  environment          = var.environment
+  resource_name_prefix = "${var.resource_name_prefix}-cache-primary"
+
+  subnet_id       = module.vpc_primary.app_subnet_ids[0]
+  security_groups = [module.vpc_primary.bastion_security_group_id]
+}
 
 # Application
 module "app_primary" {
