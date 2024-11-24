@@ -200,8 +200,7 @@ module "alb_secondary" {
     }
 }
 
-
-# Bastion Hosts
+# Bastion Host
 module "bastion_db_primary" {
   source               = "./modules/bastion-host-ssm"
   environment          = var.environment
