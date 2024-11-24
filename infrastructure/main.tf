@@ -280,10 +280,11 @@ module "route_primary" {
   alb_dns     = module.alb_primary.domain_name
   alb_zone_id = module.alb_primary.zone_id
   
-  failover_policy_type       = "PRIMARY"
   health_check_resource_path = var.app_health_check_path
-  record_identifier          = "primary"
   health_port                = 80
+  failover_policy_type       = "PRIMARY"
+  record_identifier          = "primary"
+  
 
   hosted_zone_id = data.aws_route53_zone.this.zone_id
   domain_name    = var.app_domain_name
@@ -295,10 +296,12 @@ module "route_secondary" {
   alb_dns     = module.alb_secondary.domain_name
   alb_zone_id = module.alb_secondary.zone_id
 
-  failover_policy_type       = "SECONDARY"
+  
   health_check_resource_path = var.app_health_check_path
-  record_identifier          = "secondary"
   health_port                = 80
+  failover_policy_type       = "SECONDARY"
+  record_identifier          = "secondary"
+
 
   hosted_zone_id = data.aws_route53_zone.this.zone_id
   domain_name    = var.app_domain_name
