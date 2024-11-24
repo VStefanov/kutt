@@ -149,34 +149,34 @@ This architecture supports the Kutt app with high availability, scalability, and
 The Pilot Light is one of the cost effective Disaster Recovery strategies and it maintains a minimal version of an envrionment in a secondary region (in our case we have a Primary region `eu-west-1` and a Secondary region `us-east-1`). This strategy supports only the critical components of the application (database, cache, load balancer, networking settings) and the non-critical components, like the compute power, ARE pre-defined but NOT deployed and they can be quickly launched when required.
 
 Here are the characteristic of the Pilot Light startegy:
-- Cost: moderate (small compute and high db and cache )
-- RTO: depends on the setup - minutes to hours
-- RPO: depends on the replication model 
+- **Cost**: moderate (small compute and high db and cache )
+- **RTO**: depends on the setup - minutes to hours
+- **RPO**: depends on the replication model 
     - daily backup = 1 day RPO
     - hourly backup = 1 hour RPO
     - real-time replication = seconds to minutes RPO
-    
+
 In our setup we have Global replication for our resources (ECR, Aurora Global Database, ElastiCache Global Datastore) and already predefined compute power in the secondary region which needs to be uncommented and deployed, so we have the following metrics for the Pilot Light strategy:
-- RTO: minutes
-- RPO: seconds (we have asynchronous replication for the database and the cache)
+- **RTO**: minutes
+- **RPO**: seconds (we have asynchronous replication for the database and the cache)
 
 ### Architecture Components
 We have the following components in our architecture:
-- Route 53: Manages DNS routing for the app. A hosted zone in Route53 allows access to the application - we have a Primary and a Secondary domain failover strategy.
-- Application Load Balancer (ALB): Distributes incoming traffic across ECS tasks to ensure high availability and scalability.
-- Amazon Elastic Container Service (ECS): Runs containerized applications in a private subnet across two Availability Zones (eu-west-1a and eu-west-1b). ECS ensures that the application is isolated in a secure environment.
-- Amazon ElastiCache (Redis) Global Datastore: Provides in-memory caching to improve application response times. Redis is hosted in the same private subnet (app subnet) as the ECS tasks, allowing for low-latency access.
-- Amazon Aurora PostgreSQL Global Database: A managed database that serves as the primary data store for the application. Aurora is deployed in a separate private subnet (db subnet) across two Availability Zones (eu-west-1a and eu-west-1b) to ensure durability and availability.
-- Elastic Container Registry Global Replication: Stores and manages container images for the application.
-- CloudWatch: Collects and monitors logs for each layer - application, database, cache
-- Bastion Host with AWS Session Manager integration: Deployed in a private subnet to allow secure access to resources that do not have public endpoints. It has integration with AWS Session Manager which eliminates the need for any kind of keys or Jump Host in a public subnet.
+- **Route 53**: Manages DNS routing for the app. A hosted zone in Route53 allows access to the application - we have a Primary and a Secondary domain failover strategy.
+- **Application Load Balancer (ALB)**: Distributes incoming traffic across ECS tasks to ensure high availability and scalability.
+- **Amazon Elastic Container Service (ECS)**: Runs containerized applications in a private subnet across two Availability Zones (eu-west-1a and eu-west-1b). ECS ensures that the application is isolated in a secure environment.
+- **Amazon ElastiCache (Redis) Global Datastore**: Provides in-memory caching to improve application response times. Redis is hosted in the same private subnet (app subnet) as the ECS tasks, allowing for low-latency access.
+- **Amazon Aurora PostgreSQL Global Database**: A managed database that serves as the primary data store for the application. Aurora is deployed in a separate private subnet (db subnet) across two Availability Zones (eu-west-1a and eu-west-1b) to ensure durability and availability.
+- **Elastic Container Registry (ECR) Global Replication**: Stores and manages container images for the application.
+- **CloudWatch**: Collects and monitors logs for each layer - application, database, cache
+- **Bastion Host with AWS Session Manager**: Deployed in a private subnet to allow secure access to resources that do not have public endpoints. It has integration with AWS Session Manager which eliminates the need for any kind of keys or Jump Host in a public subnet.
 
 ### Infrastructure Code and Deployment
 The Terraform codebase for deploying the infrastructure resides in the `infrastructure` folder at the root level of the repository. The infrastructure is modularized as follows:
 
-- Modules: Each resource (e.g., ECS, Load Balancer, RDS) has a dedicated module under `infrastructure/modules` folder. These modules are referenced in the main Terraform configuration file (main.tf) within the infrastructure folder.
+- **Modules**: Each resource (e.g., ECS, Load Balancer, RDS) has a dedicated module under `infrastructure/modules` folder. These modules are referenced in the main Terraform configuration file (main.tf) within the infrastructure folder.
 
-- Helper Scripts: The scripts folder contains scripts to streamline the deployment process. Here’s a breakdown of the main scripts:
+- **Helper Scripts**: The scripts folder contains scripts to streamline the deployment process. Here’s a breakdown of the main scripts:
 
     - `assume-role.sh`: Assumes the required IAM role to provision Terraform resources, allowing secure and scoped access to AWS.
 
