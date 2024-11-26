@@ -189,3 +189,5 @@ The Terraform codebase for deploying the infrastructure resides in the `infrastr
     - `terraform-<step>.sh`: Helper scripts for each stage of the Terraform deployment process, automating setup and tear-down tasks.
 
 _Note: hardcoded some of the variables that are currently not in use in the Dockerfile, if we introduce a full solution and we have an actual values for those variables, then they will be set dynamically during the deployment process._
+
+- **Requirements**: To deploy the infrastructure, ensure that a Route 53 Hosted Zone has already been created for the value specified in the `root_domain_name` variable. Additionally, an ACM Certificate must be issued for the same `root_domain_name` value.
