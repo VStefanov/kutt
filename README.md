@@ -151,7 +151,7 @@ The Pilot Light is one of the cost effective Disaster Recovery strategies and it
 Here are the characteristic of the Pilot Light startegy:
 - **Cost**: moderate (small compute and high db and cache )
 - **RTO**: depends on the setup - minutes to hours
-- **RPO**: depends on the replication model 
+- **RPO**: depends on the replication model:
     - daily backup = 1 day RPO
     - hourly backup = 1 hour RPO
     - real-time replication = seconds to minutes RPO
